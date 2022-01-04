@@ -1,0 +1,49 @@
+#!/bin/bash
+
+current_dir='/home/foxcodenine/git/repo/small-projects/007_zend_exam_questions';
+new_dir='/var/www/html/projects/007_zend_exam_questions';
+
+basename=$(echo $current_dir | grep -E -o '/\w+$'| grep -E -o '\w+$');
+basename='"zend_exam_questions project"';
+
+#-------------------------------------------------------
+
+if [ ! -d $current_dir -o ! -d $new_dir ]
+then
+	echo 'directory not found'
+	exit 0
+else
+	read -p "...init $basename git commit? y/n > " res
+fi
+
+if [ ! $res == 'y' ]
+then
+	exit 0
+fi
+
+#-------------------------------------------------------
+
+res=$(cd $current_dir; git pull)
+res=$(cd $current_dir; git pull)
+
+if [ "$res" == "Already up to date." ]
+then
+	echo '...git pull ok'
+	$(rm -rf $current_dir)
+	$(cp -r $new_dir $current_dir)
+	echo '...files has been copied'
+	read -p '...enter commit message > ' res
+	cd $current_dir; git add -A; git status;
+	read -p '...commit? y/n > ' res2
+	
+	if [ ! $res2 == 'y' ]
+	then
+		exit 0
+	fi
+	
+	cd $current_dir; git commit -m "$res"
+
+	echo $(git push)
+	
+fi
+	

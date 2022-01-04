@@ -1,0 +1,40 @@
+#!/bin/bash
+
+current_dir='/home/foxcodenine/git/repo/tutorials/udemy_courses/Advanced_CSS_and_Sass_Flexbox_Grid_Animations_and_More!/projects/Natours';
+new_dir='/var/www/html/css/Natours'
+
+basename=$(echo $current_dir | grep -E -o '/\w+$'| grep -E -o '\w+$')
+
+#-------------------------------------------------------
+
+if [ ! -d $current_dir -o ! -d $new_dir ]
+then
+	echo 'directory not found'
+	exit 0
+else
+	read -p "...commit $basename to git? y/n > " res
+fi
+
+if [ ! $res == 'y' ]
+then
+	exit 0
+fi
+
+#-------------------------------------------------------
+
+res=$(cd $current_dir; git pull)
+res=$(cd $current_dir; git pull)
+
+if [ "$res" == "Already up to date." ]
+then
+	echo '...git pull ok'
+	$(rm -rf $current_dir)
+	$(cp -r $new_dir $current_dir)
+	echo '...files has been copied'
+	read -p '...enter commit message > ' res
+	cd $current_dir; git add -A
+	res=$(cd $current_dir;git commit -m "$res")
+	echo $(git push)
+	
+fi
+	
