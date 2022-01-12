@@ -22,7 +22,13 @@ sudo passwd $username;
 
 # ------------------------------------------------------------------------------
 
-# Expired password after 10 days (ask to change password on day 9)
-sudo passwd -x 10 -w 9 $username;
+# Expired password after 10 days (ask to change password on day 7)
+sudo passwd -x 10 -w 7 $username;
 
 # ------------------------------------------------------------------------------
+# Log created user username to /var/log/messages
+echo "User ${username} was created." > '/var/log/messages';
+
+# ------------------------------------------------------------------------------
+# Send an email to new user
+echo "Welcome ${firstname} to our team!" | mail -s "welcome" "${username}@email.com"
