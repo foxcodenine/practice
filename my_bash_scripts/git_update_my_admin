@@ -1,0 +1,77 @@
+#!/bin/bash
+
+git_dir='/home/foxcodenine/git/repo/small-projects/MyAdmin';
+project_dir='/var/www/html/009';
+
+# basename=$(echo $git_dir | grep -E -o '/\w+$'| grep -E -o '\w+$');
+basename='"MyAdmin project"';
+
+#-------------------------------------------------------
+
+if [ ! -d $git_dir -o ! -d $project_dir ]
+then
+	echo 'directory not found'
+	exit 0
+else
+	read -p "...init $basename git commit? y/n > " res
+fi
+
+if [ ! $res == 'y' ]
+then
+	exit 0
+fi
+
+#-------------------------------------------------------
+
+res=$(cd $git_dir; git pull)
+res=$(cd $git_dir; git pull)
+
+if [ "$res" == "Already up to date." ]
+then
+	echo '...git pull ok'
+	$(rm -rf "${git_dir}")
+	$(cp -r "${project_dir}" $git_dir)
+	echo '...files has been copied'
+	read -p '...enter commit message > ' res
+	cd $git_dir; git add -A; git status;
+	read -p '...commit? y/n > ' res2
+	
+	if [ ! $res2 == 'y' ]
+	then
+		exit 0
+	fi
+	
+	cd $git_dir; git commit -m "$res"
+
+	echo $(git push)
+	
+fi
+
+#-------------------------------------------------------
+
+read -p '...do you want to backup the project to your USB drive? y/n > ' res
+
+usb_dir='/media/foxcodenine/Samsung_USB/Projects/small_projects/009_MyAdmin';
+
+if [ "$res" == "y" ]
+then
+
+	if [ ! -d $usb_dir  ]
+	then
+		echo '...directory not found'
+
+		read -p '... retry? y/n > ' res
+		
+		if [ ! "$res" == "y" -o  ! -d $usb_dir ]
+		then
+			echo '...directory not found, exiting!'
+			exit 0
+		fi
+	fi
+
+	$(rm -rf "${usb_dir}");
+	cp -r "${project_dir}" "${usb_dir}";
+	echo '...project backup at:' "  ${usb_dir}";
+	
+fi
+	
